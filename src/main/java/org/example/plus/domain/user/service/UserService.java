@@ -7,9 +7,15 @@ import org.example.plus.common.entity.User;
 import org.example.plus.common.utils.JwtUtil;
 import org.example.plus.domain.user.model.dto.UserDto;
 import org.example.plus.domain.user.model.request.LoginRequest;
+import org.example.plus.domain.user.model.request.UserSearchRequest;
+import org.example.plus.domain.user.model.response.UserSearchResponse;
 import org.example.plus.domain.user.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -85,5 +91,15 @@ public class UserService {
     @Transactional
     public void deleteUserByJpql(String username) {
         userRepository.deleteUserByJpql(username);
+    }
+
+    @Transactional
+    public List<UserSearchResponse> searchUserList(UserSearchRequest request) {
+        return userRepository.searchUserByMultiConditionV2(request);
+    }
+
+    @Transactional
+    public Page<UserSearchResponse> searchUserPage(UserSearchRequest request, Pageable pageable) {
+        return userRepository.searchUserByMultiConditionPage(request, pageable);
     }
 }
