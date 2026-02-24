@@ -54,7 +54,7 @@ public class PostService {
 
     public List<PostSummaryDto> getPostSummaryListByUsername(String username) {
 
-        List<PostSummaryDto> result = postRepository.findAllWithCommentsByUsername(username);
+        List<PostSummaryDto> result = postRepository.findPostSummary(username);
         return result;
     }
 }

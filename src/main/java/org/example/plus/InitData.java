@@ -31,8 +31,8 @@ public class InitData {
     @Transactional
     public void init() {
 
-        User user1 = new User("김동현", passwordEncoder.encode("1234"), "user1@naver.com", UserRoleEnum.ADMIN);
-        User user2 = new User("동현킴", passwordEncoder.encode("1234"), "user2@naver.com", UserRoleEnum.NORMAL);
+        User user1 = new User("김수민", passwordEncoder.encode("1234"), "user1@naver.com", UserRoleEnum.ADMIN);
+        User user2 = new User("수민킴", passwordEncoder.encode("1234"), "user2@naver.com", UserRoleEnum.NORMAL);
 
         userRepository.save(user1);
         userRepository.save(user2);
