@@ -40,10 +40,6 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum roleEnum;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Post> posts = new ArrayList<>();
-
-
     public User(String username, String password, String email, UserRoleEnum roleEnum) {
         this.username = username;
         this.password = password;
@@ -54,6 +50,4 @@ public class User {
     public void updateEmail(String email) {
         this.email = email;
     }
-
-
 }

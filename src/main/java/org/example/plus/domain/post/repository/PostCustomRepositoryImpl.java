@@ -10,6 +10,7 @@ import java.util.List;
 
 import static org.example.plus.common.entity.QComment.comment;
 import static org.example.plus.common.entity.QPost.post;
+import static org.example.plus.common.entity.QUser.user;
 
 @RequiredArgsConstructor
 public class PostCustomRepositoryImpl implements PostCustomRepository {
@@ -25,8 +26,9 @@ public class PostCustomRepositoryImpl implements PostCustomRepository {
                         comment.countDistinct().intValue()
                 ))
                 .from(post)
-                .leftJoin(post.comments, comment)
-                .where(post.user.username.eq(username))
+                .leftJoin(user).on(post.userId.eq(user.id))
+                .leftJoin(comment).on(comment.postId.eq(comment.postId))
+                .where(user.username.eq(username))
                 .groupBy(post.id)
                 .fetch();
     }
