@@ -1,5 +1,7 @@
 package org.example.plus.domain.post.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
@@ -127,6 +129,7 @@ public class PostService {
 
         if (cached != null) {
             log.info("Redis Data Cache Hit");
+            postCacheService.increaseViewCount(postId); // viewCount 증가
             return cached;
         }
 
@@ -164,6 +167,39 @@ public class PostService {
         postCacheService.deletePostCache(postId);
 
         return PostDto.from(post, user.getUsername());
+    }
+
+    public List<PostDto> getTopPostList(int limit) {
+
+        List<Long> topPostIdList = postCacheService.getTopPostList(limit);
+        List<PostDto> result = new ArrayList<>();
+
+        // NPE 방지
+        if (topPostIdList == null || topPostIdList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        for (Long postId : topPostIdList) {
+
+            // DB 직접 조회 전에 캐시에 해당 게시글이 있는지 확인
+            PostDto postDto = postCacheService.getPostCache(postId);
+
+            // 캐시에 값이 없으면 DB 직접 조회
+            if (postDto == null) {
+
+                Post post = postRepository.findById(postId).orElseThrow(
+                        () -> new IllegalArgumentException("등록된 포스트가 없습니다.")
+                );
+
+                User user = userRepository.findById(post.getUserId()).orElseThrow(
+                        ()-> new IllegalArgumentException("등록된 사용자가 없습니다.")
+                );
+
+                postDto = PostDto.from(post, user.getUsername());
+            }
+            result.add(postDto);
+        }
+        return result;
     }
 }
 
